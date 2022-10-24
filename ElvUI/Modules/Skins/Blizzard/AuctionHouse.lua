@@ -278,7 +278,7 @@ S:AddCallbackForAddon("Blizzard_AuctionUI", "Skin_Blizzard_AuctionUI", function(
 
 			if button then
 				button:StripTextures()
-				button:Height(36)
+				-- button:Height(36)
 
 				local highlight = _G[frameName.."Button"..i.."Highlight"]
 				highlight:SetTexture(E.Media.Textures.Highlight)
