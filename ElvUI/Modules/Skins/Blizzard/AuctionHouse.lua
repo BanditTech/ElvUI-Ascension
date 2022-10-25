@@ -278,7 +278,6 @@ S:AddCallbackForAddon("Blizzard_AuctionUI", "Skin_Blizzard_AuctionUI", function(
 
 			if button then
 				button:StripTextures()
-				-- button:Height(36)
 
 				local highlight = _G[frameName.."Button"..i.."Highlight"]
 				highlight:SetTexture(E.Media.Textures.Highlight)
@@ -294,7 +293,7 @@ S:AddCallbackForAddon("Blizzard_AuctionUI", "Skin_Blizzard_AuctionUI", function(
 				itemButton:StyleButton()
 				itemButton:GetNormalTexture():SetTexture("")
 				itemButton:Point("TOPLEFT", 0, -1)
-				itemButton:Size(46)
+				itemButton:Size(34)
 
 				local texture = _G[frameName.."Button"..i.."ItemIconTexture"]
 				texture:SetTexCoord(unpack(E.TexCoords))
