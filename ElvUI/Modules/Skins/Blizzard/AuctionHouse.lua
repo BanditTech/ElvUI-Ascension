@@ -144,15 +144,13 @@ S:AddCallbackForAddon("Blizzard_AuctionUI", "Skin_Blizzard_AuctionUI", function(
 	BrowseScrollFrameScrollBar:Point("TOPRIGHT", BrowseScrollFrame, "TOPRIGHT", 25, -19)
 	BrowseScrollFrameScrollBar:Point("BOTTOMRIGHT", BrowseScrollFrame, "BOTTOMRIGHT", 0, 19)
 
-	S:HandleNextPrevButton(BrowsePrevPageButton, nil, nil, true)
-	BrowsePrevPageButton:Point("TOPLEFT", 640, -50)
-	BrowsePrevPageButton:Size(32)
-	BrowsePrevPageButton:SetHitRectInsets(6, 6, 6, 6)
+	S:HandleNextPrevButton(BrowseNextPageButton)
+	BrowseNextPageButton:ClearAllPoints()
+	BrowseNextPageButton:Point("BOTTOMLEFT", BrowseSearchButton, "BOTTOMRIGHT", 10, -27)
 
-	S:HandleNextPrevButton(BrowseNextPageButton, nil, nil, true)
-	BrowseNextPageButton:Point("TOPRIGHT", 60, -50)
-	BrowseNextPageButton:Size(32)
-	BrowseNextPageButton:SetHitRectInsets(6, 6, 6, 6)
+	S:HandleNextPrevButton(BrowsePrevPageButton)
+	BrowsePrevPageButton:ClearAllPoints()
+	BrowsePrevPageButton:Point("BOTTOMRIGHT", BrowseSearchButton, "BOTTOMLEFT", -10, -27)
 
 	BrowseCloseButton:Point("BOTTOMRIGHT", 66, 6)
 	BrowseBuyoutButton:Point("RIGHT", BrowseCloseButton, "LEFT", -4, 0)
@@ -160,11 +158,11 @@ S:AddCallbackForAddon("Blizzard_AuctionUI", "Skin_Blizzard_AuctionUI", function(
 	BrowseResetButton:Point("TOPLEFT", 20, -74)
 	BrowseSearchButton:Point("TOPRIGHT", 10, -30)
 
-	BrowseNameText:Point("TOPLEFT", 18, -30)
-	BrowseName:Point("TOPLEFT", BrowseNameText, "BOTTOMLEFT", 3, -3)
-	BrowseName:Size(140, 18)
+	BrowseName:Width(164)
+	BrowseName:Point("TOPLEFT", AuctionFrameBrowse, "TOPLEFT", 20, -54)
+	BrowseNameText:Point("TOPLEFT", BrowseName, "TOPLEFT", 0, 16)
 
-	BrowseLevelText:Point("BOTTOMLEFT", AuctionFrameBrowse, "TOPLEFT", 200, -40)
+	BrowseLevelText:Point("BOTTOMLEFT", AuctionFrameBrowse, "TOPLEFT", 195, -48)
 	BrowseMaxLevel:Point("LEFT", BrowseMinLevel, "RIGHT", 8, 0)
 
 	BrowseBidText:Point("RIGHT", BrowseBidPrice, "LEFT", -11, 0)
@@ -328,6 +326,8 @@ S:AddCallbackForAddon("Blizzard_AuctionUI", "Skin_Blizzard_AuctionUI", function(
 
 	AuctionFrameBrowse.LeftBackground:Point("TOPLEFT", 20, -103)
 	AuctionFrameBrowse.LeftBackground:Point("BOTTOMRIGHT", -575, 34)
+	BrowseNoResultsText:SetParent(AuctionFrameBrowse.LeftBackground)
+	BrowseSearchCountText:SetParent(AuctionFrameBrowse.LeftBackground)
 
 	AuctionFrameBrowse.RightBackground:Point("TOPLEFT", AuctionFrameBrowse.LeftBackground, "TOPRIGHT", 4, 0)
 	AuctionFrameBrowse.RightBackground:Point("BOTTOMRIGHT", AuctionFrame, "BOTTOMRIGHT", -8, 34)
