@@ -385,7 +385,7 @@ function UF:PostCastStart(unit)
 		r, g, b = colors.castNoInterrupt[1], colors.castNoInterrupt[2], colors.castNoInterrupt[3]
 	elseif UF.db.colors.castClassColor and UnitIsPlayer(unit) then
 		local t = E.media.herocolor
-		if t then r, g, b = t[1], t[2], t[3] end
+		if t then r, g, b = t.r, t.g, t.b end
 	elseif UF.db.colors.castReactionColor then
 		local Reaction = UnitReaction(unit, "player")
 		local t = Reaction and ElvUF.colors.reaction[Reaction]
