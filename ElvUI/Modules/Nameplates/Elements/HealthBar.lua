@@ -13,6 +13,10 @@ function NP:Update_HealthOnValueChanged()
 	NP:Update_HealthColor(frame)
 	NP:Update_Glow(frame)
 	NP:StyleFilterUpdate(frame, "UNIT_HEALTH")
+
+	if not frame.guid then
+        NP:CheckHP(frame)
+    end
 end
 
 function NP:Update_HealthColor(frame)
