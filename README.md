@@ -55,7 +55,7 @@ Contributions from this repository:
 
 ## Installation:
 
-1. Download **[Latest Version](https://github.com/BanditTech/ElvUI-Ascension/releases/latest)**
+1. Download **[Latest Version](https://github.com/Ascension-Addons/ElvUI/releases/latest)**
 2. Unpack the Zip file
 3. Open the folder "ElvUI-Ascension-(#.##)"
 4. Copy (or drag and drop) **ElvUI**, **ElvUI_OptionsUI** and **ElvUI_Enhanced** into your `Wow-Directory\Interface\AddOns`
