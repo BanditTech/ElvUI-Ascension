@@ -939,7 +939,10 @@ function CH:GetColoredName(event, _, arg2, _, _, _, _, _, arg8, _, _, _, arg12)
 		local _, englishClass = GetPlayerInfoByGUID(arg12)
 
 		if englishClass then
-			local classColorTable = E.media.herocolor
+			local classColorTable = RAID_CLASS_COLORS[englishClass]
+			if arg12 == UnitName("player") then
+				classColorTable = E.media.herocolor
+			end
 			if not classColorTable then
 				return arg2
 			end
@@ -1439,7 +1442,7 @@ function CH:CheckKeyword(message, author)
 				local wordMatch = classMatch and lowerCaseWord
 
 				if wordMatch and not E.global.chat.classColorMentionExcludedNames[wordMatch] then
-					local classColorTable = E.media.herocolor
+					local classColorTable = RAID_CLASS_COLORS[classMatch]
 					word = gsub(word, gsub(tempWord, "%-", "%%-"), format("\124cff%.2x%.2x%.2x%s\124r", classColorTable.r*255, classColorTable.g*255, classColorTable.b*255, tempWord))
 				end
 			end

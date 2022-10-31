@@ -384,8 +384,9 @@ function UF:PostCastStart(unit)
 	if (self.notInterruptible and unit ~= "player") and UnitCanAttack("player", unit) then
 		r, g, b = colors.castNoInterrupt[1], colors.castNoInterrupt[2], colors.castNoInterrupt[3]
 	elseif UF.db.colors.castClassColor and UnitIsPlayer(unit) then
-		local t = E.media.herocolor
-		if t then r, g, b = t.r, t.g, t.b end
+		local _, class = UnitClass(unit)
+		local t = UnitIsUnit("player", unit) and E.media.herocolor or RAID_CLASS_COLORS[class]
+		if t then r, g, b = t[1], t[2], t[3] end
 	elseif UF.db.colors.castReactionColor then
 		local Reaction = UnitReaction(unit, "player")
 		local t = Reaction and ElvUF.colors.reaction[Reaction]
@@ -411,7 +412,8 @@ function UF:PostCastInterruptible(unit)
 	if self.notInterruptible and UnitCanAttack("player", unit) then
 		r, g, b = colors.castNoInterrupt[1], colors.castNoInterrupt[2], colors.castNoInterrupt[3]
 	elseif UF.db.colors.castClassColor and UnitIsPlayer(unit) then
-		local t = E.media.herocolor
+		local _, class = UnitClass(unit)
+		local t = UnitIsUnit("player", unit) and E.media.herocolor or RAID_CLASS_COLORS[class]
 		if t then r, g, b = t[1], t[2], t[3] end
 	elseif UF.db.colors.castReactionColor then
 		local Reaction = UnitReaction(unit, "player")

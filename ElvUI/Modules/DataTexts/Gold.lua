@@ -30,7 +30,8 @@ local function BuildDataTable()
 
 	for charName in pairs(ElvDB.gold[E.myrealm]) do
 		if ElvDB.gold[E.myrealm][charName] then
-			local color = E.media.herocolor
+			local class = ElvDB.class[E.myrealm][charName]
+			local color = class and RAID_CLASS_COLORS[class] or E.media.herocolor
 
 			tinsert(dataTable,
 				{

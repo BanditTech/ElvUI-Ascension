@@ -57,7 +57,7 @@ function DT:BattlegroundStats()
 		for i = 1, GetNumBattlefieldScores() do
 			local name = GetBattlefieldScore(i)
 			if name and name == E.myname then
-				local classColor = E.media.herocolor
+				local classColor = RAID_CLASS_COLORS[E.myclass]
 
 				DT.tooltip:AddDoubleLine(L["Stats For:"], name, 1, 1, 1, classColor.r, classColor.g, classColor.b)
 				DT.tooltip:AddLine(" ")

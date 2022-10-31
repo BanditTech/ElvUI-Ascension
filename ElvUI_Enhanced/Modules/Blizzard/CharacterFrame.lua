@@ -176,12 +176,26 @@ local PAPERDOLL_SIDEBARS = {
 		frame = "PaperDollEquipmentManagerPane",
 		icon = "Interface\\AddOns\\ElvUI_Enhanced\\Media\\Textures\\PaperDollSidebarTabs",
 		texCoords = {0.01562500, 0.53125000, 0.46875000, 0.60546875}
+	},
+	{
+		name = "Mystic Enchants",
+		frame = "PaperDollMysticEnchantPane",
+		icon = "Interface\\Icons\\inv_custom_ReforgeToken",
+		texCoords = {0.1, 0.9, 0.1, 0.9}
 	}
 }
 
 local PAPERDOLL_STATINFO = {
 	["ITEM_LEVEL"] = {
 		updateFunc = function(statFrame, unit) module:ItemLevel(statFrame, unit) end
+	},
+
+	["PRIMARY_STAT"] = {
+		updateFunc = function(statFrame, unit) module:PrimaryStat(statFrame, unit) end
+	},
+
+	["FEL_COMM"] = {
+		updateFunc = function(statFrame, unit) module:FelComm(statFrame, unit) end
 	},
 
 	["STRENGTH"] = {
@@ -304,8 +318,20 @@ local PAPERDOLL_STATCATEGORIES = {
 			"ITEM_LEVEL"
 		}
 	},
-	["BASE_STATS"] = {
+	["PRIMARY_STAT"] = {
 		id = 2,
+		stats = {
+			"PRIMARY_STAT"
+		}
+	},
+	["FEL_COMM"] = {
+		id = 3,
+		stats = {
+			"FEL_COMM"
+		}
+	},
+	["BASE_STATS"] = {
+		id = 4,
 		stats = {
 			"STRENGTH",
 			"AGILITY",
@@ -315,7 +341,7 @@ local PAPERDOLL_STATCATEGORIES = {
 		}
 	},
 	["MELEE_COMBAT"] = {
-		id = 3,
+		id = 5,
 		stats = {
 			"MELEE_DAMAGE",
 			"MELEE_DPS",
@@ -327,7 +353,7 @@ local PAPERDOLL_STATCATEGORIES = {
 		}
 	},
 	["RANGED_COMBAT"] = {
-		id = 4,
+		id = 6,
 		stats = {
 			"RANGED_COMBAT1",
 			"RANGED_COMBAT2",
@@ -337,7 +363,7 @@ local PAPERDOLL_STATCATEGORIES = {
 		}
 	},
 	["SPELL_COMBAT"] = {
-		id = 5,
+		id = 7,
 		stats = {
 			"SPELL_COMBAT1",
 			"SPELL_COMBAT2",
@@ -348,7 +374,7 @@ local PAPERDOLL_STATCATEGORIES = {
 		}
 	},
 	["DEFENSES"] = {
-		id = 6,
+		id = 8,
 		stats = {
 			"DEFENSES1",
 			"DEFENSES2",
@@ -359,7 +385,7 @@ local PAPERDOLL_STATCATEGORIES = {
 		}
 	},
 	["RESISTANCE"] = {
-		id = 7,
+		id = 9,
 		stats = {
 			"ARCANE",
 			"FIRE",
@@ -372,6 +398,8 @@ local PAPERDOLL_STATCATEGORIES = {
 
 local PAPERDOLL_STATCATEGORY_DEFAULTORDER = {
 	"ITEM_LEVEL",
+	"PRIMARY_STAT",
+	"FEL_COMM",
 	"BASE_STATS",
 	"MELEE_COMBAT",
 	"RANGED_COMBAT",
@@ -554,7 +582,7 @@ do
 		titanGripCheck:RegisterEvent("SPELL_UPDATE_USABLE")
 		titanGripCheck:RegisterEvent("CHARACTER_POINTS_CHANGED")
 		titanGripCheck:SetScript("OnEvent", function(self, event, ...)
-			titanGrip = select(5, GetTalentInfo(2, 27)) == 1
+			titanGrip = CA_IsSpellKnown(46917)
 
 			if event == "PLAYER_ENTERING_WORLD" or event == "SPELL_UPDATE_USABLE" then
 				self:UnregisterEvent(event)
@@ -759,28 +787,37 @@ end
 ]]
 
 local function GetAverageItemLevel()
+	local items = 16
+	local ilvl = 0
 	local colorCount, sumR, sumG, sumB = 0, 0, 0, 0
 
-	for slotID = 1, 17 do
+	for slotID = 1, 18 do
 		if slotID ~= INVSLOT_BODY then
 			local itemLink = GetInventoryItemLink("player", slotID)
 
 			if itemLink then
 				local _, _, quality, itemLevel, _, _, _, _, itemEquipLoc = GetItemInfo(itemLink)
+
 				if itemLevel then
+					ilvl = ilvl + itemLevel
+
 					colorCount = colorCount + 1
 					sumR = sumR + qualityColors[quality][1]
 					sumG = sumG + qualityColors[quality][2]
 					sumB = sumB + qualityColors[quality][3]
+
+					if slotID == INVSLOT_MAINHAND and (itemEquipLoc ~= "INVTYPE_2HWEAPON" or titanGrip) then
+						items = 17
+					end
 				end
 			end
 		end
 	end
 
 	if colorCount == 0 then
-		return AVG_ITEM_LEVEL, 1, 1, 1
+		return ilvl / items, 1, 1, 1
 	else
-		return AVG_ITEM_LEVEL, (sumR / colorCount), (sumG / colorCount), (sumB / colorCount)
+		return ilvl / items, (sumR / colorCount), (sumG / colorCount), (sumB / colorCount)
 	end
 end
 
@@ -837,6 +874,38 @@ function module:ItemLevel(statFrame, unit)
 	local avgItemLevel, r, g, b = GetAverageItemLevel()
 	statFrame.Label:SetFormattedText("%.1f", avgItemLevel)
 	statFrame.Label:SetTextColor(r, g, b)
+end
+
+local felCommText = AscensionUI.CharacterFrame.Extension.StatPanel.FelCommutation.Content.CostText
+function module:FelComm(statFrame, unit)
+	if not self.Initialized then return end
+
+	if felCommText:GetText() then
+		statFrame.Label:SetText(felCommText:GetText())
+	else
+		statFrame.Label:SetText(GetMoneyString(0))
+	end
+	statFrame.tooltip = "Fel Commutation"
+	statFrame.tooltip2 = "Maximum gold lost on death.\n|cffFF8888Only applies in High Risk|r"
+end
+
+function module:PrimaryStat(statFrame, unit)
+	if not self.Initialized then return end
+	local statID = C_PrimaryStat:GetActivePrimaryStat()
+
+	if not statID then
+		statFrame.Label:SetFormattedText("No Primary Stat")
+		statFrame.Label:SetTextColor(0.5, 0.5, 0.5)
+		statFrame.tooltip = nil
+		return
+	end
+
+	local _, _, _, name, tooltip = C_PrimaryStat:GetPrimaryStatInfo(statID)
+
+	statFrame.Label:SetFormattedText(name)
+	statFrame.Label:SetTextColor(STAT_COLORS[statID]:GetRGBA())
+	statFrame.tooltip = name
+	statFrame.tooltip2 = tooltip
 end
 
 function module:SetStat(statFrame, unit, statIndex)
@@ -1201,6 +1270,10 @@ function module:PaperDollFrame_UpdateStatCategory(categoryFrame)
 		else
 			categoryFrame.NameText:SetText(L["Item Level"])
 		end
+	elseif category == "PRIMARY_STAT" then
+		categoryFrame.NameText:SetText("Primary Stat")
+	elseif category == "FEL_COMM" then
+		categoryFrame.NameText:SetText("Fel Comm Cost")
 	elseif category == "RESISTANCE" then
 		categoryFrame.NameText:SetText(L["Resistance"])
 	elseif category == "DEFENSES" then
@@ -1239,6 +1312,20 @@ function module:PaperDollFrame_UpdateStatCategory(categoryFrame)
 					label:SetJustifyH("CENTER")
 					statFrame.Value:SetText("")
 
+					if statFrame.leftGrad then
+						statFrame.leftGrad:Show()
+						statFrame.rightGrad:Show()
+					end
+				elseif stat == "FEL_COMM" or stat == "PRIMARY_STAT" then
+					statFrame:Height(30)
+					local label = statFrame.Label
+					label:Width(187)
+					label:ClearAllPoints()
+					label:SetPoint("CENTER")
+					label:FontTemplate(nil, 16, "NONE")
+					label:SetJustifyH("CENTER")
+					statFrame.Value:SetText("")
+	
 					if statFrame.leftGrad then
 						statFrame.leftGrad:Show()
 						statFrame.rightGrad:Show()
@@ -1286,7 +1373,9 @@ function module:PaperDollFrame_UpdateStatCategory(categoryFrame)
 	end
 
 	for index = 1, numVisible do
-		if index % 2 == 0 or categoryInfo == PAPERDOLL_STATCATEGORIES["ITEM_LEVEL"] then
+		local isSpecial = categoryInfo == PAPERDOLL_STATCATEGORIES["ITEM_LEVEL"] or
+						  categoryInfo == PAPERDOLL_STATCATEGORIES["PRIMARY_STAT"]
+		if index % 2 == 0 or isSpecial then
 			local statFrame = categoryFrame.Stats[index]
 			if not statFrame.leftGrad then
 				statFrame.leftGrad = statFrame:CreateTexture(nil, "BACKGROUND")
@@ -1739,6 +1828,89 @@ function module:PaperDollEquipmentManagerPane_Update()
 	end
 end
 
+local EnchantSlots = {
+	{INVSLOT_HEAD, "HEADSLOT"},
+	{INVSLOT_NECK, "NECKSLOT"},
+	{INVSLOT_SHOULDER, "SHOULDERSLOT"},
+	{INVSLOT_CHEST, "CHESTSLOT"},
+	{INVSLOT_WAIST, "WAISTSLOT"},
+	{INVSLOT_LEGS, "LEGSSLOT"},
+	{INVSLOT_FEET, "FEETSLOT"},
+	{INVSLOT_WRIST, "WRISTSLOT"},
+	{INVSLOT_HAND, "HANDSSLOT"},
+	{INVSLOT_FINGER1, "FINGER0SLOT"},
+	{INVSLOT_FINGER2, "FINGER1SLOT"},
+	{INVSLOT_TRINKET1, "TRINKET0SLOT"},
+	{INVSLOT_TRINKET2, "TRINKET1SLOT"},
+	{INVSLOT_BACK, "BACKSLOT"},
+	{INVSLOT_MAINHAND, "MAINHANDSLOT"},
+	{INVSLOT_OFFHAND, "SECONDARYHANDSLOT"},
+	{INVSLOT_RANGED, "RANGEDSLOT"},
+}
+
+function module:MysticEnchantPane_Update()
+	HybridScrollFrame_Update(PaperDollMysticEnchantPane, 768, PaperDollMysticEnchantPane:GetHeight())
+	if not PaperDollMysticEnchantPane.scrollBar.thumbTexture:IsShown() then
+		PaperDollMysticEnchantPane.scrollBar.thumbTexture:Show()
+	end
+
+	local scrollOffset = HybridScrollFrame_GetOffset(PaperDollMysticEnchantPane)
+	local buttons = PaperDollMysticEnchantPane.buttons
+	local name, texture, button
+
+	for i = 1, #buttons do
+		button = buttons[i]
+		if (i + scrollOffset) <= 17 then
+			button:Show()
+			button:Enable()
+			local slot, slotStr = unpack(EnchantSlots[i + scrollOffset])
+			local enchant = GetInventoryItemMysticEnchant("player", slot)
+
+			if enchant then
+				local RE = GetREData(enchant)
+				name, _, texture = GetSpellInfo(RE.spellID)
+
+				if not name then
+					name = "|cffFF0000Unknown Enchant: " .. RE.spellID .. "|r"
+					texture = nil
+				else
+					name = ITEM_QUALITY_COLORS[RE.quality]:WrapText(name)
+				end
+			else
+				name = nil
+				texture = select(2, GetInventorySlotInfo(slotStr))
+			end
+
+			local slotName = _G[slotStr]
+			if name then
+				button.name = slotName .. "\n" .. name
+			else
+				button.name = slotName
+			end
+
+			button.enchant = enchant
+			button.text:SetText(button.name)
+			button.text:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+
+			if texture then
+				button.icon:SetTexture(texture)
+			else
+				button.icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark")
+			end
+
+			if (i + scrollOffset) % 2 == 0 then
+				button.Stripe:SetTexture(0.9, 0.9, 1)
+				button.Stripe:SetAlpha(0.1)
+				button.Stripe:Show()
+			else
+				button.Stripe:Hide()
+			end
+		else
+			button:Hide()
+		end
+	end
+end
+
 function module:PetPaperDollCompanionPane_Update()
 	local scrollFrame = PetPaperDollCompanionPane
 	local offset = HybridScrollFrame_GetOffset(scrollFrame)
@@ -2132,6 +2304,7 @@ function module:Initialize()
 	SetCVar("equipmentManager", 1)
 
 	if self.skinEnabled then
+		AscensionCharacterFrame:Hide()
 		CharacterNameFrame:ClearAllPoints()
 		CharacterNameFrame:Point("CENTER", CharacterFrame.backdrop, 6, 200)
 		CharacterFrameCloseButton:Point("CENTER", CharacterFrame.backdrop, "TOPRIGHT", -12, -13)
@@ -2196,12 +2369,17 @@ function module:Initialize()
 do -- CharacterFrame
 	local sidebarTabs = CreateFrame("Frame", "PaperDollSidebarTabs", PaperDollFrame)
 	sidebarTabs:Hide()
-	sidebarTabs:Size(168, 35)
-	sidebarTabs:Point("BOTTOMRIGHT", CharacterFrame.backdrop, "TOPRIGHT", -18, -59)
+	sidebarTabs:Size(152, 35)
+	sidebarTabs:Point("BOTTOMRIGHT", CharacterFrame.backdrop, "TOPRIGHT", -29, -59)
+
+	local sidebarTabs4 = CreateFrame("Button", "PaperDollSidebarTab4", sidebarTabs)
+	sidebarTabs4:SetID(4)
+	sidebarTabs4:Point("BOTTOMRIGHT",  0, 0)
+	self:PaperDollSidebarTab(sidebarTabs4)
 
 	local sidebarTabs3 = CreateFrame("Button", "PaperDollSidebarTab3", sidebarTabs)
 	sidebarTabs3:SetID(3)
-	sidebarTabs3:Point("BOTTOMRIGHT", -30, 0)
+	sidebarTabs3:Point("RIGHT", "PaperDollSidebarTab4", "LEFT", -5, 0)
 	self:PaperDollSidebarTab(sidebarTabs3)
 
 	local sidebarTabs2 = CreateFrame("Button", "PaperDollSidebarTab2", sidebarTabs)
@@ -2230,6 +2408,9 @@ do -- CharacterFrame
 		end
 	end)
 
+	--
+	-- Title Pane
+	--
 	local titlePane = CreateFrame("ScrollFrame", "PaperDollTitlesPane", PaperDollFrame, "HybridScrollFrameTemplate")
 	titlePane:Hide()
 	titlePane:Size(169, 350)
@@ -2311,11 +2492,14 @@ do -- CharacterFrame
 
 	CreateSmoothScrollAnimation(CharacterStatsPaneScrollBar)
 
+	--
+	-- Stats Pane
+	--
 	local statsPaneScrollChild = CreateFrame("Frame", "CharacterStatsPaneScrollChild", statsPane)
 	statsPaneScrollChild:Size(169, 0)
 	statsPaneScrollChild:Point("TOPLEFT")
 
-	for i = 1, 8 do
+	for i = 1, 10 do
 		local button = CreateFrame("Frame", "CharacterStatsPaneCategory"..i, statsPaneScrollChild)
 		button:Size(169, 0)
 
@@ -2376,6 +2560,9 @@ do -- CharacterFrame
 		getmetatable(self).__index.Hide(self)
 	end
 
+	--
+	-- Equipment Manager Pane
+	--
 	local equipmentManagerPane = CreateFrame("ScrollFrame", "PaperDollEquipmentManagerPane", PaperDollFrame, "HybridScrollFrameTemplate")
 	equipmentManagerPane:Hide()
 	equipmentManagerPane:Size(169, 350)
@@ -2508,6 +2695,49 @@ do -- CharacterFrame
 	GearManagerDialogPopup:SetParent(PaperDollFrame)
 	GearManagerDialogPopup:ClearAllPoints()
 	GearManagerDialogPopup:Point("BOTTOMLEFT", CharacterFrame.backdrop, "BOTTOMRIGHT", -6, -8)
+
+	--
+	-- Mystic Enchants Pane
+	--
+	local mysticEnchantPane = CreateFrame("ScrollFrame", "PaperDollMysticEnchantPane", PaperDollFrame, "HybridScrollFrameTemplate")
+	mysticEnchantPane:Hide()
+	mysticEnchantPane:Size(169, 350)
+	mysticEnchantPane.scrollBar = CreateFrame("Slider", "$parentScrollBar", mysticEnchantPane, "HybridScrollBarTemplate")
+	mysticEnchantPane.scrollBar:Point("TOPLEFT", mysticEnchantPane, "TOPRIGHT", 2, -16)
+	mysticEnchantPane.scrollBar:Point("BOTTOMLEFT", mysticEnchantPane, "BOTTOMRIGHT", 2, 14)
+	S:HandleScrollBar(mysticEnchantPane.scrollBar)
+	FixHybridScrollBarSkin(mysticEnchantPane)
+
+	CreateSmoothScrollAnimation(mysticEnchantPane.scrollBar, true)
+
+	mysticEnchantPane:SetScript("OnShow", function(self)
+		module:MysticEnchantPane_Update()
+	end)
+
+	mysticEnchantPane.scrollBar.Show = function(self)
+		mysticEnchantPane:Width(169)
+		mysticEnchantPane:Point("TOPRIGHT", CharacterFrame.backdrop, -29, -64)
+		for _, button in next, mysticEnchantPane.buttons do
+			button:Width(169)
+		end
+		getmetatable(self).__index.Show(self)
+	end
+
+	mysticEnchantPane.scrollBar.Hide = function(self)
+		mysticEnchantPane:Width(190)
+		mysticEnchantPane:Point("TOPRIGHT", CharacterFrame.backdrop, -8, -64)
+		for _, button in next, mysticEnchantPane.buttons do
+			button:Width(190)
+		end
+		getmetatable(self).__index.Hide(self)
+	end
+
+	mysticEnchantPane:SetFrameLevel(CharacterFrame:GetFrameLevel() + 1)
+
+	HybridScrollFrame_OnLoad(mysticEnchantPane)
+	mysticEnchantPane.update = self.MysticEnchantPane_Update
+	HybridScrollFrame_CreateButtons(PaperDollMysticEnchantPane, "MysticEnchantButtonTemplate2", 2, -4)
+
 
 	CharacterModelFrame:Size(237, 324)
 

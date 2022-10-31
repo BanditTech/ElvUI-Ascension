@@ -49,12 +49,13 @@ end
 
 function THREAT:GetColor(unit)
 	if UnitIsPlayer(unit) then
-		local class = E.media.herocolor
-		if not class then
+		local _, class = UnitClass(unit)
+		local color = UnitIsUnit("player", unit) and E.media.herocolor or RAID_CLASS_COLORS[class]
+		if not color then
 			return 194, 194, 194
 		end
 
-		return class.r*255, class.g*255, class.b*255
+		return color.r*255, color.g*255, color.b*255
 	end
 
 	local unitReaction = UnitReaction(unit, "player")

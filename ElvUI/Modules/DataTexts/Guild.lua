@@ -140,7 +140,7 @@ local function OnClick(_, btn)
 			info = dataTable[i]
 
 			if info[7] and info[1] ~= E.myname then
-				classc = E.media.herocolor
+				classc = RAID_CLASS_COLORS[info[9]]
 				levelc = GetQuestDifficultyColor(info[3])
 
 				if UnitInParty(info[1]) or UnitInRaid(info[1]) then
@@ -222,7 +222,7 @@ local function OnEnter(self, _, noUpdate)
 			zonec = inactivezone
 		end
 
-		classc = E.media.herocolor
+		classc = RAID_CLASS_COLORS[info[9]]
 
 		if shiftKeyDown then
 			DT.tooltip:AddDoubleLine(

@@ -50,7 +50,7 @@ function M:UpdateBubbleBorder()
 				wordMatch = classMatch and lowerCaseWord
 
 				if wordMatch and not E.global.chat.classColorMentionExcludedNames[wordMatch] then
-					classColorTable = E.media.herocolor
+					classColorTable = RAID_CLASS_COLORS[classMatch]
 					word = gsub(word, gsub(tempWord, "%-", "%%-"), format("\124cff%.2x%.2x%.2x%s\124r", classColorTable.r*255, classColorTable.g*255, classColorTable.b*255, tempWord))
 				end
 
@@ -76,7 +76,7 @@ function M:AddChatBubbleName(chatBubble, guid, name)
 	if guid and guid ~= "" then
 		local _, class = GetPlayerInfoByGUID(guid)
 		if class then
-			color = E:RGBToHex(E.media.herocolor.r, E.media.herocolor.g, E.media.herocolor.b)
+			color = RAID_CLASS_COLORS[class].hex
 		end
 	else
 		color = "|cffffffff"

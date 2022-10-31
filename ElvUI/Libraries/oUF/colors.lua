@@ -30,6 +30,10 @@ local colors = {
 	threat = {},
 }
 
+for classToken, color in next, RAID_CLASS_COLORS do
+	colors.class[classToken] = {color.r, color.g, color.b}
+end
+
 for debuffType, color in next, DebuffTypeColor do
 	colors.debuff[debuffType] = {color.r, color.g, color.b}
 end

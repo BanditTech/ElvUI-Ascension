@@ -6,19 +6,7 @@ local _G = _G
 local UnitClass = UnitClass
 local UnitInParty = UnitInParty
 
-local BLIP_TEX_COORDS = {
-	["WARRIOR"] = {0, 0.125, 0, 0.25},
-	["PALADIN"] = {0.125, 0.25, 0, 0.25},
-	["HUNTER"] = {0.25, 0.375, 0, 0.25},
-	["ROGUE"] = {0.375, 0.5, 0, 0.25},
-	["PRIEST"] = {0.5, 0.625, 0, 0.25},
-	["DEATHKNIGHT"] = {0.625, 0.75, 0, 0.25},
-	["SHAMAN"] = {0.75, 0.875, 0, 0.25},
-	["MAGE"] = {0.875, 1, 0, 0.25},
-	["WARLOCK"] = {0, 0.125, 0.25, 0.5},
-	["DRUID"] = {0.25, 0.375, 0.25, 0.5},
-	["HERO"] = {0.25, 0.375, 0.25, 0.5}
-}
+local BLIP_TEX_COORDS = { 0.5, 0.625, 0, 0.25 }
 
 local BLIP_RAID_Y_OFFSET = 0.5
 
@@ -28,7 +16,7 @@ local function OnShowParty(self)
 
 	if self.class ~= class then
 		self.class = class
-		self.icon:SetTexCoord(BLIP_TEX_COORDS[class][1], BLIP_TEX_COORDS[class][2], BLIP_TEX_COORDS[class][3], BLIP_TEX_COORDS[class][4])
+		self.icon:SetTexCoord(unpack(BLIP_TEX_COORDS))
 	end
 end
 
@@ -45,9 +33,9 @@ local function OnShowRaid(self)
 		self.inParty = inParty
 
 		if inParty then
-			self.icon:SetTexCoord(BLIP_TEX_COORDS[class][1], BLIP_TEX_COORDS[class][2], BLIP_TEX_COORDS[class][3], BLIP_TEX_COORDS[class][4])
+			self.icon:SetTexCoord(unpack(BLIP_TEX_COORDS))
 		else
-			self.icon:SetTexCoord(BLIP_TEX_COORDS[class][1], BLIP_TEX_COORDS[class][2], BLIP_TEX_COORDS[class][3] + BLIP_RAID_Y_OFFSET, BLIP_TEX_COORDS[class][4] + BLIP_RAID_Y_OFFSET)
+			self.icon:SetTexCoord(BLIP_TEX_COORDS[1], BLIP_TEX_COORDS[2], BLIP_TEX_COORDS[3] + BLIP_RAID_Y_OFFSET, BLIP_TEX_COORDS[4] + BLIP_RAID_Y_OFFSET)
 		end
 	end
 end

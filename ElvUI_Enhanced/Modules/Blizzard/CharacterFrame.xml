@@ -244,6 +244,68 @@
 		</NormalTexture>
 	</Button>
 
+	<Button name="MysticEnchantButtonTemplate2" virtual="true">
+		<Size x="169" y="44"/>
+		<Anchors>
+			<Anchor point="LEFT" x="2" y="0"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentStripe" parentKey="Stripe">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="1" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" inherits="GameFontNormalLeft" parentKey="text">
+					<Size x="98" y="38"/>
+					<Anchors>
+						<Anchor point="LEFT" x="44"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentHighlightBar" parentKey="HighlightBar" file="Interface\AddOns\ElvUI_Enhanced\media\textures\UI-FriendsFrame-HighlightBar-Blue" alpha="0.4" alphaMode="ADD" hidden="true">
+					<TexCoords left="0.2" right="0.8" top="0" bottom="1"/>
+				</Texture>
+			</Layer>
+		</Layers>
+
+		<Scripts>
+			<OnLoad>
+				self:CreateBackdrop("Default")
+				self.backdrop:SetOutside(self.icon)
+				self.icon:SetParent(self.backdrop)
+			</OnLoad>
+			<OnEnter>
+				if self.enchant then
+					local RE = GetREData(self.enchant)
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+					GameTooltip:SetHyperlink("spell:"..RE.spellID)
+					GameTooltip:Show()
+				end
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
+		</Scripts>
+		<NormalTexture name="$parentIcon" parentKey="icon">
+			<Size>
+				<AbsDimension x="36" y="36"/>
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT">
+					<Offset>
+						<AbsDimension x="4" y="0"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+			<TexCoords left="0.08" right="0.92" top="0.08" bottom="0.92"/>
+		</NormalTexture>
+	</Button>
+
 	<Button name="CompanionButtonTemplate2" virtual="true">
 		<Size x="169" y="44"/>
 		<Anchors>

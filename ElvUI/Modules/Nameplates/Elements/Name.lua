@@ -52,7 +52,7 @@ function NP:Update_Name(frame, triggered)
 
 	local classColor, useClassColor
 	if class then
-		classColor = E.media.herocolor
+		classColor = RAID_CLASS_COLORS[class]
 		useClassColor = self.db.units[frame.UnitType].name and self.db.units[frame.UnitType].name.useClassColor
 	end
 

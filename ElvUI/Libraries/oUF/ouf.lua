@@ -805,4 +805,5 @@ if(global) then
 	end
 end
 
-oUF.herocolor = {0.0, 1.0, 0.0}
+local _, myClass = UnitClass("player")
+oUF.herocolor = RAID_CLASS_COLORS[myClass]

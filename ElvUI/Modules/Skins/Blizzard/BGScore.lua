@@ -90,7 +90,7 @@ S:AddCallback("Skin_WorldStateScore", function()
 					name = format("%s|cffffffff - |r%s%s|r", name, color, realm)
 				end
 
-				classTextColor = E.media.herocolor
+				classTextColor = RAID_CLASS_COLORS[classToken]
 
 				nameText = _G["WorldStateScoreButton"..i.."NameText"]
 				nameText:SetText(name)

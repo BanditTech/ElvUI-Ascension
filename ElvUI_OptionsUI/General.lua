@@ -370,7 +370,7 @@ E.Options.args.general = {
 						herocolor = {
 							order = 5,
 							type = "color",
-							name = "Class Color",
+							name = "My Class Color",
 							desc = "Color of class colored elements.",
 							hasAlpha = false,
 						},

@@ -186,7 +186,7 @@ function UF:FrameGlow_SetGlowColor(glow, unit, which)
 		if isPlayer then
 			local _, class = UnitClass(unit)
 			if class then
-				local color = E.media.herocolor
+				local color = UnitIsUnit("player", unit) and E.media.herocolor or RAID_CLASS_COLORS[class]
 				if color then
 					r, g, b = color.r, color.g, color.b
 				end

@@ -228,8 +228,28 @@ function NP:GetUnitClassByGUID(frame, guid)
 	end
 end
 
+local grenColorToClass = {}
+for class, color in pairs(RAID_CLASS_COLORS) do
+	grenColorToClass[color.g] = class
+end
+
 function NP:UnitClass(frame, unitType)
-	return "DRUID"
+	if frame._class then
+		return frame._class
+	end
+	if unitType == "FRIENDLY_PLAYER" then
+		if frame.unit then
+			local _, class = UnitClass(frame.unit)
+			if class then
+				return class
+			end
+		else
+			return NP:GetUnitClassByGUID(frame, frame.guid)
+		end
+	elseif unitType == "ENEMY_PLAYER" then
+		local _, g = frame.oldHealthBar:GetStatusBarColor()
+		return grenColorToClass[floor(g*100 + 0.5) / 100]
+	end
 end
 
 function NP:UnitDetailedThreatSituation(frame)

@@ -6,6 +6,7 @@
 ## SavedVariables: EnhancedDB
 ## RequiredDeps: ElvUI
 ## DefaultState: Enabled
+## Dependencies: AscensionUI
 
 Developer\Load_Developer.xml
 Libraries\Load_Libraries.xml

@@ -76,7 +76,12 @@ local function UpdateColor(self, event, unit, powertype)
 	if(element.colorPower) then
 		t = self.colors.power[ADDITIONAL_POWER_BAR_INDEX]
 	elseif(element.colorClass and UnitIsPlayer(unit)) then
-		t = oUF.herocolor
+		if UnitIsUnit("player", unit) then
+			t = oUF.herocolor
+		else
+			local _, class = UnitClass(unit)
+			t = self.colors.class[class]
+		end
 	elseif(element.colorSmooth) then
 		r, g, b = self:ColorGradient(element.cur or 1, element.max or 1, unpack(element.smoothGradient or self.colors.smooth))
 	end

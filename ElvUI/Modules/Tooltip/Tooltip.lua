@@ -222,7 +222,7 @@ function TT:SetUnitText(tt, unit, level, isShiftKeyDown)
 		local guildName, guildRankName = GetGuildInfo(unit)
 		local pvpName = UnitPVPName(unit)
 
-		color = E.media.herocolor
+		color = UnitIsUnit("player", unit) and E.media.herocolor or RAID_CLASS_COLORS[class]
 
 		if self.db.playerTitles and pvpName then
 			name = pvpName
@@ -276,7 +276,7 @@ function TT:SetUnitText(tt, unit, level, isShiftKeyDown)
 		end
 
 		if not color then
-			color = E.media.herocolor
+			color = UnitIsUnit("player", unit) and E.media.herocolor or RAID_CLASS_COLORS[class]
 		end
 
 		local levelLine = self:GetLevelLine(tt, 2)
@@ -379,13 +379,15 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 		if unit ~= "player" and UnitExists(unitTarget) then
 			local targetColor
 			if UnitIsPlayer(unitTarget) and not UnitHasVehicleUI(unitTarget) then
-				targetColor = E.media.herocolor
+				local _, class = UnitClass(unitTarget)
+				targetColor = UnitIsUnit("player", unitTarget) and E.media.herocolor or RAID_CLASS_COLORS[class]
 			else
 				targetColor = E.db.tooltip.useCustomFactionColors and E.db.tooltip.factionColors[UnitReaction(unitTarget, "player")] or FACTION_BAR_COLORS[UnitReaction(unitTarget, "player")]
 			end
 
 			if not targetColor then
-				targetColor = E.media.herocolor
+				local _, class = UnitClass(unitTarget)
+				targetColor = UnitIsUnit("player", unitTarget) and E.media.herocolor or RAID_CLASS_COLORS[class]
 			end
 
 			tt:AddDoubleLine(format("%s:", TARGET), format("|cff%02x%02x%02x%s|r", targetColor.r * 255, targetColor.g * 255, targetColor.b * 255, UnitName(unitTarget)))
@@ -400,7 +402,8 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 				local groupUnit = (inRaid and "raid"..i or "party"..i)
 
 				if not UnitIsUnit(groupUnit, "player") and UnitIsUnit(groupUnit.."target", unit) then
-					local classColor = E.media.herocolor
+					local _, class = UnitClass(groupUnit)
+					local classColor = RAID_CLASS_COLORS[class]
 
 					tinsert(targetList, format("%s%s", E:RGBToHex(classColor.r, classColor.g, classColor.b), UnitName(groupUnit)))
 				end
@@ -560,7 +563,8 @@ function TT:SetUnitAura(tt, ...)
 	if id and self.db.spellID then
 		if caster then
 			local name = UnitName(caster)
-			local color = E.media.herocolor
+			local _, class = UnitClass(caster)
+			local color = UnitIsUnit("player", caster) and E.media.herocolor or RAID_CLASS_COLORS[class]
 			tt:AddDoubleLine(format("|cFFCA3C3C%s|r %d", ID, id), format("%s%s", E:RGBToHex(color.r, color.g, color.b), name))
 		else
 			tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))

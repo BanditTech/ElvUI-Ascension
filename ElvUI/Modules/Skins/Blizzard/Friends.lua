@@ -199,7 +199,7 @@ S:AddCallback("Skin_Friends", function()
 			_, _, level, _, _, _, classFileName = GetWhoInfo(button.whoIndex)
 
 			if classFileName then
-				classTextColor = E.media.herocolor
+				classTextColor = RAID_CLASS_COLORS[classFileName]
 				button.icon:Show()
 				button.icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classFileName]))
 			else
@@ -327,7 +327,7 @@ S:AddCallback("Skin_Friends", function()
 				_, _, _, level, _, _, _, _, online, _, classFileName = GetGuildRosterInfo(button.guildIndex)
 				if classFileName then
 					if online then
-						classTextColor = E.media.herocolor
+						classTextColor = RAID_CLASS_COLORS[classFileName]
 						levelTextColor = GetQuestDifficultyColor(level)
 						buttonText = _G["GuildFrameButton"..i.."Name"]
 						buttonText:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
@@ -343,7 +343,7 @@ S:AddCallback("Skin_Friends", function()
 				_, _, _, _, _, _, _, _, online, _, classFileName = GetGuildRosterInfo(button.guildIndex)
 				if classFileName then
 					if online then
-						classTextColor = E.media.herocolor
+						classTextColor = RAID_CLASS_COLORS[classFileName]
 						_G["GuildFrameGuildStatusButton"..i.."Name"]:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
 						_G["GuildFrameGuildStatusButton"..i.."Online"]:SetTextColor(1.0, 1.0, 1.0)
 					end

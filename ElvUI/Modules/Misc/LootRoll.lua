@@ -141,7 +141,7 @@ local function buttonOnEnter(self)
 
 	for playerName, rollData in pairs(self.parent.rollResults) do
 		if self.rollType == rollData[1] and rollData[2] then
-			local classColor = E.media.herocolor
+			local classColor = RAID_CLASS_COLORS[rollData[2]]
 			GameTooltip:AddLine(playerName, classColor.r, classColor.g, classColor.b)
 		end
 	end

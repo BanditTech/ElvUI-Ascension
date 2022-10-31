@@ -21,7 +21,8 @@ function NP:Update_HealthColor(frame)
 	local r, g, b
 	local scale = 1
 
-	local classColor = E.media.herocolor
+	local class = frame.UnitClass
+	local classColor = RAID_CLASS_COLORS[class]
 	local useClassColor = NP.db.units[frame.UnitType].health.useClassColor
 	if classColor and ((frame.UnitType == "FRIENDLY_PLAYER" and useClassColor) or (frame.UnitType == "ENEMY_PLAYER" and useClassColor)) then
 		r, g, b = classColor.r, classColor.g, classColor.b
