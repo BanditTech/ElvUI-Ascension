@@ -1,8 +1,0 @@
-## Interface: 30300
-## Author: Luciq
-## Title: |cff1784d1E|r|cffe5e3e3lvUI|r |cff1784d1A|r|cffe5e3e3scension|r |cff1784d1E|r|cffe5e3e3xtended|r |cffe5e3e3U|r|cffe5e3e3I|r
-## Notes: Extends custom UI elements done by Ascension for your ElvUI_Enhanced plugin
-## RequiredDeps: ElvUI
-## DefaultState: Enabled
-
-ElvUI_AscensionExtendedUI.lua

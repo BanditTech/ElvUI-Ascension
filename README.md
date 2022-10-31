@@ -58,16 +58,12 @@ Contributions from this repository:
 1. Download **[Latest Version](https://github.com/BanditTech/ElvUI-Ascension/releases/latest)**
 2. Unpack the Zip file
 3. Open the folder "ElvUI-Ascension-(#.##)"
-4. Copy (or drag and drop) **ElvUI**, **ElvUI_OptionsUI**, **ElvUI_AscensionExtendedUI** and **ElvUI_Enhanced** into your `Wow-Directory\Interface\AddOns`
+4. Copy (or drag and drop) **ElvUI**, **ElvUI_OptionsUI** and **ElvUI_Enhanced** into your `Wow-Directory\Interface\AddOns`
 5. While you are in your addon folder, ensure you do not have the addon installed `All-Stats`. This addon provides that functionality.
-6. Unpack Patchfile.zip
-7. Place the Patch-Y.mpq file into  `Wow-Directory\Data`
-8. Restart WoW
+6. Restart WoW
 
 ## Plugins:
 ElvUI_Enhanced - Included in this repo
-<br />
-ElvUI_AscensionExtendedUI - Included in this repo
 <br />
 [ElvUI_AddOnSkins](https://github.com/ElvUI-WotLK/ElvUI_AddOnSkins)
 <br />
